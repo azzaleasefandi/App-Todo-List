@@ -3,9 +3,7 @@ import React, { useState, useRef, useEffect } from "react";
 import Form from "./components/Form";
 import FilterButton from "./components/FilterButton";
 import Todo from "./components/Todo";
-import { nanoid } from "nanoid";
 import { TodoServices } from './services/to-do-service'
-
 
 function usePrevious(value) {
   const ref = useRef();
@@ -82,14 +80,9 @@ function App(props) {
     />
   ));
 
-  async function onGetActiveTask(taskname) {
-    let currentTaskPayload ={
-      id: "todo-" + nanoid(),
-      taskname: taskname,
-      status: false
-    }
-    const newTask = await TodoServices.taskNeedDisplay(currentTaskPayload);
-    setTasks([...tasks, newTask]);
+  async function onClickAddNewTask(name) { 
+    let newTask = await TodoServices.addNewTask(name);
+    setTasks([...tasks,newTask]);
   }
 
 
@@ -107,7 +100,7 @@ function App(props) {
 
   return (
     <div className="todoapp stack-large">
-      <Form addTask={onGetActiveTask} />
+      <Form addTask={onClickAddNewTask} />
       <div className="filters btn-group stack-exception">
         {filterList}
       </div>

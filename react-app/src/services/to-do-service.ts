@@ -7,35 +7,62 @@ if (MYTODO_APP_SERVER_PORT){
 }
 
 class ToDoServices{
-  async taskNeedDisplay(id:string,taskname:string,status:boolean){
+  async getAllTask(){
+    try {
+      let requestEndpoint = apiServerPath
+
+      let responseGetTask = await axios.get(requestEndpoint);
+
+      console.log(`after axios call [GET(${requestEndpoint})]: `, responseGetTask);
+
+      let responseData = responseGetTask.data
+
+      if(responseGetTask.status === 200){
+        let allTask = JSON.stringify(responseData)
+        console.log(allTask)
+      return allTask
+      } else{
+        console.log("status is NOT OK [INVALID RESPONSE DATA]: ", responseData);
+        return noTaskFound("Invalid response data");
+      }
+    } catch (error) {
+      console.log("Function getActiveTask Failed [AXIOS EXCEPTION]: ", error);
+      return noTaskFound("Failed to get task from server");
+    }
+
+    function noTaskFound(message: string) {
+      return {
+        success: false,
+        payload:message,
+      };
+    }
+  }
+  
+  async addNewTask(name:string){
     try {
       let requestEndpoint = apiServerPath
 
       let requestData = {
-        id:id,
-        taskName:taskname,
-        status:false
+        id:"todo-"+ taskNumber(),
+        name:name,
+        completed:false
       }
 
-      let responseAfterGetTask = await axios.post(requestEndpoint, requestData);
+      let responseAfterAddTask = await axios.post(requestEndpoint, requestData);
 
-      console.log(`after axios call [POST(${requestEndpoint})]: `, requestData, responseAfterGetTask);
+      console.log(`after axios call [POST(${requestEndpoint})]: `, requestData, responseAfterAddTask);
 
-      let responseData = responseAfterGetTask.data
+      let responseData = responseAfterAddTask.data
 
-      if(responseAfterGetTask.status === 201){
+      if(responseAfterAddTask.status === 201){
       console.log(responseData)
-        if(!responseData.taskname){
-          return failedToAddTask("No task at the moment");
-        } else{
-          return responseData.taskname
-        }
+      return responseData
       } else{
         console.log("status is NOT OK [INVALID RESPONSE DATA]: ", responseData);
         return failedToAddTask("Invalid response data");
       }
     } catch (error) {
-      console.log("Function taskNeedToAdd Failed [AXIOS EXCEPTION]: ", error);
+      console.log("Function addNewTask Failed [AXIOS EXCEPTION]: ", error);
       return failedToAddTask("Failed to add task");
     }
 
@@ -44,6 +71,12 @@ class ToDoServices{
         success: false,
         payload:message,
       };
+    }
+
+    function taskNumber(){
+      let startNumber = 0;
+      startNumber = startNumber + 1;
+      return startNumber
     }
   }
 }
