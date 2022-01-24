@@ -73,6 +73,42 @@ class ToDoServices{
     }
   }
 
+  async editTask(id:string,name:string, completed:boolean){
+    try {
+      let requestEndpoint = apiServerPath + "/" + id + "/edit-task-name"
+
+      let requestData = {
+        id: id,
+        name: name,
+        completed:completed
+      }
+
+      let responseEditTask = await axios.put(requestEndpoint, requestData);
+
+      console.log(`after axios call [PUT(${requestEndpoint})]: `, requestData, responseEditTask);
+
+      let responseData = responseEditTask.data
+
+      if(responseEditTask.status === 200){
+      console.log(responseData)
+      return responseData.name
+      } else{
+        console.log("status is NOT OK [INVALID RESPONSE DATA]: ", responseData);
+        return failedEditTask("Invalid response data");
+      }
+    } catch (error) {
+      console.log("Function addNewTask Failed [AXIOS EXCEPTION]: ", error);
+      return failedEditTask("Failed to edit task");
+    }
+
+    function failedEditTask(message: string) {
+      return {
+        success: false,
+        payload:message,
+      };
+    }
+  }
+
   async taskCheckBox(id:string, name:string, completed:boolean){
     try {
       let requestEndpoint = apiServerPath + "/" + id + "/check-box"
@@ -109,7 +145,7 @@ class ToDoServices{
     }
   }
 
-  async deleteTask(id:string, name:string, completed:boolean){
+  async deleteTask(id:string){
     try {
       let requestEndpoint = apiServerPath + "/" + id + "/delete-task"
 

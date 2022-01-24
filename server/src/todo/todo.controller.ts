@@ -39,9 +39,15 @@ export class TodoController {
   }
 
   @Put(":id/check-box")
-  updateTodo(@Body() updateTodo: TodoDTO, @Param("id") id): TodoDTO {
-    todosData = todosData.map(todo => (todo.id === id ? updateTodo : todo));
-    return updateTodo;
+  updateStatus(@Body() updateStatus: TodoDTO, @Param("id") id): TodoDTO {
+    todosData = todosData.map(todo => (todo.id === id ? updateStatus : todo));
+    return updateStatus;
+  }
+
+  @Put(":id/edit-task-name")
+  updateTaskName(@Body() updateTaskName: TodoDTO, @Param("id") id): TodoDTO {
+    todosData = todosData.map(todo => (todo.id === id ? updateTaskName : todo));
+    return updateTaskName;
   }
 
   @Delete(":id/delete-task")

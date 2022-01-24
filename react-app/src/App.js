@@ -52,7 +52,7 @@ function App(props) {
     const editedTaskList = tasks.map(task => {
     // if this task has the same ID as the edited task
       if (id === task.id) {
-        //
+        TodoServices.editTask(task.id,newName,task.completed)
         return {...task, name: newName}
       }
       return task;
