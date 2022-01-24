@@ -44,7 +44,7 @@ export class TodoController {
     return updateTodo;
   }
 
-  @Delete(":id")
+  @Delete(":id/delete-task")
   deleteTodo(@Param("id") id): TodoDTO {
     const todoToDelete = todosData.find(todo => todo.id === id);
     todosData = todosData.filter(todo => todo.id !== id);

@@ -42,6 +42,7 @@ function App(props) {
 
 
   function deleteTask(id) {
+    TodoServices.deleteTask(id)
     const remainingTasks = tasks.filter(task => id !== task.id);
     setTasks(remainingTasks);
   }
@@ -85,12 +86,11 @@ function App(props) {
   async function onClickAddNewTask(name) { 
     let newTask = await TodoServices.addNewTask(name);
     setTasks([...tasks,newTask]);
-    console.log(tasks)
   }
 
 
   const tasksNoun = taskList.length !== 1 ? 'tasks' : 'task';
-  const headingText = `${taskList.length} ${tasksNoun} remaining`;
+  const headingText = `${taskList.length} ${tasksNoun} in total`;
 
   const listHeadingRef = useRef(null);
   const prevTaskLength = usePrevious(tasks.length);
