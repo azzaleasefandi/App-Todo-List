@@ -21,13 +21,13 @@ function Form(props) {
   return (
     <form onSubmit={handleSubmit}>
       <h2 className="label-wrapper">
-        <label htmlFor="new-todo-input" className="label__lg">
-          Please enter task need to be done
-        </label>
+        <title htmlFor="new-todo-input" className="label__lg">
+          SIMPLE TO-DO LIST APP
+        </title>
       </h2>
 
       <input
-        placeholder="e.g: Buy Grocery"
+        placeholder="Please type your task here"
         type="text"
         id="new-todo-input"
         className="input input__lg"

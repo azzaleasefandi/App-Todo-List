@@ -29,9 +29,11 @@ function App(props) {
     const updatedTasks = tasks.map(task => {
       // if this task has the same ID as the edited task
       if (id === task.id) {
-        // use object spread to make a new obkect
+        // use object spread to make a new object
         // whose `completed` prop has been inverted
-        return {...task, completed: !task.completed}
+        TodoServices.taskCheckBox(task.id,task.name,task.completed)
+        task.completed = !task.completed
+        return {...task, completed: task.completed}
       }
       return task;
     });
@@ -83,6 +85,7 @@ function App(props) {
   async function onClickAddNewTask(name) { 
     let newTask = await TodoServices.addNewTask(name);
     setTasks([...tasks,newTask]);
+    console.log(tasks)
   }
 
 

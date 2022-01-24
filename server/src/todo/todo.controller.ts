@@ -7,6 +7,7 @@ import {
   Post,
   Put
 } from "@nestjs/common";
+import { response } from "express";
 import { TodoDTO } from "./todo.dto";
 import { todos } from "./todos-mock";
 
@@ -14,27 +15,32 @@ let todosData = todos;
 
 @Controller("todos")
 export class TodoController {
-  @Get()
+  @Get("/all-task")
   getTodos(): TodoDTO[] {
-    return todosData;
+    if(todosData.length === 0){
+      return []
+    } else{
+      return todosData;
+    } 
   }
 
-  @Post()
+  @Post("/add-new-task")
   createTodo(@Body() createTodo: TodoDTO): TodoDTO {
+    let count = todosData.length
     const newTodo: TodoDTO = {
-      id: (todosData.length + 1).toString(),
+      id: count.toString(),
       ...createTodo
     };
+    ++count;
 
     todosData = [...todosData, newTodo];
 
     return newTodo;
   }
 
-  @Put(":id")
+  @Put(":id/check-box")
   updateTodo(@Body() updateTodo: TodoDTO, @Param("id") id): TodoDTO {
     todosData = todosData.map(todo => (todo.id === id ? updateTodo : todo));
-
     return updateTodo;
   }
 
