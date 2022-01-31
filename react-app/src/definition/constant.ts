@@ -1,3 +1,5 @@
 export const MYTODO_APP_SERVER_PORT = process.env.REACT_APP_API_SERVER_PORT;
 export const MYTODO_APP_SERVER_PATH = process.env.REACT_APP_API_SERVER_PATH;
 export const MYTODO_APP_SERVER_HOST = process.env.REACT_APP_API_SERVER_HOST;
+
+export const ID_INITIAL_COUNT = 1;

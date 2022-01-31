@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { MYTODO_APP_SERVER_PORT, MYTODO_APP_SERVER_PATH, MYTODO_APP_SERVER_HOST } from '../definition/constant';
+import { MYTODO_APP_SERVER_PORT, MYTODO_APP_SERVER_PATH, MYTODO_APP_SERVER_HOST, ID_INITIAL_COUNT } from '../definition/constant';
 
 let apiServerPath =  MYTODO_APP_SERVER_HOST +''+ MYTODO_APP_SERVER_PATH;
+let count = ID_INITIAL_COUNT
 if (MYTODO_APP_SERVER_PORT){
   apiServerPath = MYTODO_APP_SERVER_HOST + ':' + MYTODO_APP_SERVER_PORT + MYTODO_APP_SERVER_PATH;
 }
@@ -9,7 +10,7 @@ if (MYTODO_APP_SERVER_PORT){
 class ToDoServices{
   async getAllTask(){
     try {
-      let requestEndpoint = apiServerPath + "all-task"
+      let requestEndpoint = apiServerPath + "/all-task"
 
       let responseGetTask = await axios.get(requestEndpoint);
 
@@ -40,25 +41,29 @@ class ToDoServices{
   
   async addNewTask(name:string){
     try {
-      let requestEndpoint = apiServerPath + "/add-new-task"
+      
+      let requestEndpoint = apiServerPath + "/add-new-task" 
 
       let requestData = {
+        id: "todo-" + count,
         name:name,
         completed:false
       }
+
+      ++count
 
       let responseAfterAddTask = await axios.post(requestEndpoint, requestData);
 
       console.log(`after axios call [POST(${requestEndpoint})]: `, requestData, responseAfterAddTask);
 
-      let responseData = responseAfterAddTask.data
+      let responseData = responseAfterAddTask.data.task
 
-      if(responseAfterAddTask.status === 201){
+      if(responseAfterAddTask.status === 200){
       console.log(responseData)
       return responseData
       } else{
         console.log("status is NOT OK [INVALID RESPONSE DATA]: ", responseData);
-        return failedToAddTask("Invalid response data");
+        return responseAfterAddTask.data.message;
       }
     } catch (error) {
       console.log("Function addNewTask Failed [AXIOS EXCEPTION]: ", error);
@@ -73,13 +78,13 @@ class ToDoServices{
     }
   }
 
-  async editTask(id:string,name:string, completed:boolean){
+  async editTask(_id:string,newName:string, completed:boolean){
     try {
-      let requestEndpoint = apiServerPath + "/" + id + "/edit-task-name"
+      let requestEndpoint = apiServerPath + "/" + _id + "/edit-task-name"
 
       let requestData = {
-        id: id,
-        name: name,
+        _id: _id,
+        newName: newName,
         completed:completed
       }
 
@@ -87,17 +92,17 @@ class ToDoServices{
 
       console.log(`after axios call [PUT(${requestEndpoint})]: `, requestData, responseEditTask);
 
-      let responseData = responseEditTask.data
+      let responseData = responseEditTask.data.task
 
       if(responseEditTask.status === 200){
       console.log(responseData)
       return responseData.name
       } else{
         console.log("status is NOT OK [INVALID RESPONSE DATA]: ", responseData);
-        return failedEditTask("Invalid response data");
+        return responseEditTask.data.message;
       }
     } catch (error) {
-      console.log("Function addNewTask Failed [AXIOS EXCEPTION]: ", error);
+      console.log("Function EditTask Failed [AXIOS EXCEPTION]: ", error);
       return failedEditTask("Failed to edit task");
     }
 
@@ -109,12 +114,12 @@ class ToDoServices{
     }
   }
 
-  async taskCheckBox(id:string, name:string, completed:boolean){
+  async taskCheckBox(_id:string, name:string, completed:boolean){
     try {
-      let requestEndpoint = apiServerPath + "/" + id + "/check-box"
+      let requestEndpoint = apiServerPath + "/" + _id + "/check-box"
 
       let requestData = {
-        id: id,
+        _id: _id,
         name: name,
         completed:!completed
       }
@@ -123,17 +128,17 @@ class ToDoServices{
 
       console.log(`after axios call [PUT(${requestEndpoint})]: `, requestData, responseToggleCheckBox);
 
-      let responseData = responseToggleCheckBox.data
+      let responseData = responseToggleCheckBox.data.task
 
       if(responseToggleCheckBox.status === 200){
       console.log(responseData)
       return responseData.completed
       } else{
         console.log("status is NOT OK [INVALID RESPONSE DATA]: ", responseData);
-        return failedToggleTask("Invalid response data");
+        return responseToggleCheckBox.data.message;
       }
     } catch (error) {
-      console.log("Function addNewTask Failed [AXIOS EXCEPTION]: ", error);
+      console.log("Function ToggleCheckBox Failed [AXIOS EXCEPTION]: ", error);
       return failedToggleTask("Failed to toggle task");
     }
 
@@ -145,24 +150,24 @@ class ToDoServices{
     }
   }
 
-  async deleteTask(id:string){
+  async deleteTask(_id:string){
     try {
-      let requestEndpoint = apiServerPath + "/" + id + "/delete-task"
+      let requestEndpoint = apiServerPath + "/" + _id + "/delete-task"
 
       let responseDeleteTask = await axios.delete(requestEndpoint);
 
       console.log(`after axios call [PUT(${requestEndpoint})]: `, responseDeleteTask);
 
-      let responseData = responseDeleteTask.data
+      let responseData = responseDeleteTask.data.task
 
       if(responseDeleteTask.status === 200){
       return ("Successfully Deleted")
       } else{
         console.log("status is NOT OK [INVALID RESPONSE DATA]: ", responseData);
-        return failedDeleteTask("Invalid response data");
+        return responseDeleteTask.data.message
       }
     } catch (error) {
-      console.log("Function addNewTask Failed [AXIOS EXCEPTION]: ", error);
+      console.log("Function DeleteTask Failed [AXIOS EXCEPTION]: ", error);
       return failedDeleteTask("Failed to toggle task");
     }
 

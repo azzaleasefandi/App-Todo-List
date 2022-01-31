@@ -28,10 +28,10 @@ function App(props) {
   function toggleTaskCompleted(id) {
     const updatedTasks = tasks.map(task => {
       // if this task has the same ID as the edited task
-      if (id === task.id) {
+      if (id === task._id) {
         // use object spread to make a new object
         // whose `completed` prop has been inverted
-        TodoServices.taskCheckBox(task.id,task.name,task.completed)
+        TodoServices.taskCheckBox(task._id,task.name,task.completed)
         task.completed = !task.completed
         return {...task, completed: task.completed}
       }
@@ -43,7 +43,7 @@ function App(props) {
 
   function deleteTask(id) {
     TodoServices.deleteTask(id)
-    const remainingTasks = tasks.filter(task => id !== task.id);
+    const remainingTasks = tasks.filter(task => id !== task._id);
     setTasks(remainingTasks);
   }
 
@@ -51,8 +51,8 @@ function App(props) {
   function editTask(id, newName) {
     const editedTaskList = tasks.map(task => {
     // if this task has the same ID as the edited task
-      if (id === task.id) {
-        TodoServices.editTask(task.id,newName,task.completed)
+      if (id === task._id) {
+        TodoServices.editTask(task._id,newName,task.completed)
         return {...task, name: newName}
       }
       return task;
@@ -64,10 +64,10 @@ function App(props) {
   .filter(FILTER_MAP[filter])
   .map(task => (
     <Todo
-      id={task.id}
+      id={task._id}
       name={task.name}
       completed={task.completed}
-      key={task.id}
+      key={task._id}
       toggleTaskCompleted={toggleTaskCompleted}
       deleteTask={deleteTask}
       editTask={editTask}
@@ -86,6 +86,7 @@ function App(props) {
   async function onClickAddNewTask(name) { 
     let newTask = await TodoServices.addNewTask(name);
     setTasks([...tasks,newTask]);
+    console.log(newTask)
   }
 
 
