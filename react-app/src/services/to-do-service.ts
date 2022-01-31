@@ -84,7 +84,7 @@ class ToDoServices{
 
       let requestData = {
         _id: _id,
-        newName: newName,
+        name: newName,
         completed:completed
       }
 
